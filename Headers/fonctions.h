@@ -39,9 +39,10 @@ void question5();
 void ajouterTaillePolynome(monome * P, int i);
 double eval(monome * polynome, double x);
 
-char* concatenerPolynome(char* chaine, char* out);
+void concatenerPolynome(char* chaine, char* out);
 monome extrairePremierMonome(char* chaine);
-monome * entrezPolynome();
+//monome * entrezPolynome();
+void entrezPolynome();
 void estUnExposant(char* string, int* degres);
 int estUnNombre(char c);
 int estUnSep(char c);
