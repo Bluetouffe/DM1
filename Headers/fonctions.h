@@ -9,27 +9,38 @@ typedef struct monome{
     int exposant;
 }monome;
 
-int estPresentDans(monome toTest, monome * polynome, int taillePolynome);
+char menu();
+void printChoice();
 int valideMenu(char p);
+
+void exercice1();
+void crypt(char *p);
+
+void question1();
+void saisie(monome * p, int *taille);
+monome saisieMonome();
+void saisiePolynome(monome * Polynome, int * i);
+
+void question2();
+void suppressionDoublons(monome * polynome, int * taillePolynome);
+
+void question3();
+void triPolynome(monome * P, int start, int stop);
+int estPresentDans(monome toTest, monome * polynome, int taillePolynome);
 int estTrie(monome * P, int start, int stop);
 int placerPivot(monome * P, int start, int stop);
 
-double eval(monome * polynome, double x);
-
-char menu();
-
-void crypt(char *p);
-void exercice1();
-void printChoice();
+void question4();
 void displayMonome(monome m);
 void displayFirstMonome(monome m);
 void displayPolynome(monome * P, int tailleP);
-void triPolynome(monome * P, int start, int stop);
-void ajouterTaillePolynome(monome * P, int i);
 
-monome saisieMonome();
-monome * saisiePolynome();
-monome * suppressionDoublons(monome * polynome, int * taillePolynome);
+void question5();
+void ajouterTaillePolynome(monome * P, int i);
+double eval(monome * polynome, double x);
+
+char* concatenerPolynome(char* chaine, char* out);
+void extrairePremierMonome(char* chaine);
 monome * entrezPolynome();
 
 #endif // FONCTIONS_H_INCLUDED
