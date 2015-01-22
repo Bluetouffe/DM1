@@ -422,6 +422,7 @@ void ajouterTaillePolynome(monome * P, int i)
     P = (monome *) realloc(P, (i+1)*sizeof(monome));
     P[i].exposant = -1;
     P[i].coeff = i;
+    printf("\ni=%d\n",i);
 }
 
 double eval(monome * Polynome, double x)
@@ -451,9 +452,11 @@ double eval(monome * Polynome, double x)
 }
 
 //saisie manuelle d'une phrase de type polynome
-monome * entrezPolynome()
+//monome * entrezPolynome()
+void entrezPolynome()
 {
-    monome * polynome = malloc(0*sizeof(monome));
+    monome * polynome = NULL;
+    polynome = malloc(0*sizeof(monome));
     int taille = 0;
 
     char buffer[TAILLE_POLYNOME]={0};
@@ -464,7 +467,7 @@ monome * entrezPolynome()
     char* saisie = malloc(0*sizeof(char));
     concatenerPolynome(buffer, saisie);
 
-    printf("\n%s\n",saisie);
+    printf("\nsaisie: %s\n",saisie);
 
     taille++;
     polynome = (monome*) realloc(polynome, taille*sizeof(monome));
@@ -475,10 +478,10 @@ monome * entrezPolynome()
 
     free(saisie);
     free(polynome);
-    return polynome;
+    //return polynome;
 }
 
-char* concatenerPolynome(char chaine[TAILLE_POLYNOME], char * out)
+void concatenerPolynome(char chaine[TAILLE_POLYNOME], char * saisie)
 {
     int i=0, j=0;
 
@@ -487,16 +490,14 @@ char* concatenerPolynome(char chaine[TAILLE_POLYNOME], char * out)
         if(chaine[i] != ' ')
         {
             j++;
-            out = (char *) realloc(out, j*sizeof(char));
-            out[j-1] = chaine[i];
+            saisie = (char *) realloc(saisie, j*sizeof(char));
+            saisie[j-1] = chaine[i];
         }
         i++;
     }
 
-    out = (char *) realloc(out, (j+1) * sizeof(char));
-    out[j] = '\0';
-
-    return out;
+    saisie = (char *) realloc(saisie, (j+1) * sizeof(char));
+    saisie[j] = '\0';
 }
 
 /*En première position uniquement :
@@ -562,7 +563,7 @@ void estUnExposant(char* string, int* degres)
     }
     while(i)
     {
-        *degres += estUnNombre(string[i]) * cptPuissance;
+        *degres += estUnNombre(string[i-1]) * cptPuissance;
         cptPuissance *= 10;
         i--;
     }
