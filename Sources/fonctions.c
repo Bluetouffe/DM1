@@ -25,7 +25,22 @@ char menu()//Appelle les fonctions correspondantes aux questions
                 exercice1();
                 break;
             case '2'://appelle la question 2
-                saisiePolynome();
+                question1();
+                break;
+            case '3':
+                question2();
+                break;
+            case '4':
+                question3();
+                break;
+            case '5':
+                question4();
+                break;
+            case '6':
+                question5();
+                break;
+            case '7':
+                entrezPolynome();
                 break;
             default://cas par défaut
                 exit(-1);
@@ -84,41 +99,98 @@ void crypt(char *p)//fonction de cryptage d'un caractère
     }
 }
 
-monome * saisiePolynome()//Saisie d'un polynome
+void question1()
 {
-    int i=0;
+    printf("\n\nQuestion 1 - Saisie polynome\n");
 
-    monome * Polynome = NULL;//initialisation
+    monome * p = malloc(0*sizeof(monome));
+    int taille = 0;
+    saisie(p, &taille);
+
+    displayPolynome(p, taille);//affichage du polynome saisie
+
+    free(p);
+}
+
+void saisie(monome * polynome, int *taille)
+{
+    saisiePolynome(polynome, taille);
+}
+
+void question2()
+{
+    monome * p = malloc(0*sizeof(monome));
+    int taille = 0;
+    saisie(p, &taille);
+
+    suppressionDoublons(p, &taille);//suppression des doublons et des zéros
+
+    printf("\nPolynome reduit:\n");
+
+    displayPolynome(p, taille);//affichage du polynome réduit
+
+    free(p);
+}
+
+void question3()
+{
+    monome * p = malloc(0*sizeof(monome));
+    int taille = 0;
+    saisie(p, &taille);
+
+    suppressionDoublons(p, &taille);
+
+    triPolynome(p, 0, taille);
+    printf("\ntableau trié:\n");
+    displayPolynome(p, taille);
+
+    free(p);
+}
+
+void question4()
+{
+    question3();
+}
+
+void question5()
+{
+    monome * p = malloc(0*sizeof(monome));
+    int taille = 0;
+    double x;
+    saisie(p, &taille);
+
+    suppressionDoublons(p, &taille);
+
+    triPolynome(p, 0, taille);
+    printf("\n");
+    displayPolynome(p, taille);
+
+    ajouterTaillePolynome(p, taille);
+
+    printf("Entrez le nombre a évaluer :");
+    scanf("%lf", &x);
+
+    printf("\nP(x)= %.2f\n", eval(p, x));
+
+    free(p);
+}
+
+void saisiePolynome(monome * Polynome, int * i)//Saisie d'un polynome
+{
+    *i=0;
+
     monome buffer;
-
-    printf("\n\nQuestion 2 - Saisie polynome\n");
 
     do{
         buffer = saisieMonome();//on remplit un monome
 
         if(buffer.exposant != -1)//on vérifie qu'il ne correspond pas a la condition de sortie
         {
-            i++;
-            Polynome = (monome*) realloc (Polynome, i*sizeof(monome));//on augmente de 1 la taille du polynome
-            Polynome[i-1] = buffer;//qu'on remplit avec le buffer
+            (*i)++;
+            Polynome = (monome*) realloc (Polynome, (*i)*sizeof(monome));//on augmente de 1 la taille du polynome
+            Polynome[(*i)-1] = buffer;//qu'on remplit avec le buffer
         }
     }while(buffer.exposant != -1);//condition de sortie exposant==-1
-
-    displayPolynome(Polynome, i);//affichage du polynome saisie
-
-    Polynome = suppressionDoublons(Polynome, &i);//suppression des doublons et des zéros
-    printf("\ni=%d\ntableau reduit:\n",i);
-    displayPolynome(Polynome, i);//affichage du polynome réduit
-
-    printf("\ntableau trié:\n");
-    triPolynome(Polynome, 0, i);
-    displayPolynome(Polynome, i);
-
-    ajouterTaillePolynome(Polynome, i);
-
-    printf("\n\nTest eval 0: %.2f\nTest eval 1: %.2f", eval(Polynome, 0), eval(Polynome, 1));
-
-    return Polynome;
 }
 
 monome saisieMonome()
@@ -138,7 +210,7 @@ monome saisieMonome()
 }
 
 //renvoie un monome* de taille taille polynome
-monome * suppressionDoublons(monome * polynome, int * taillePolynome)
+void suppressionDoublons(monome * polynome, int * taillePolynome)
 {
     int i, j=0, estPresent=0;
 
@@ -162,7 +234,7 @@ monome * suppressionDoublons(monome * polynome, int * taillePolynome)
         }
     }
 
-    monome * polynomeSortie = malloc(0*sizeof(monome));
+    polynome = (monome *) realloc(polynome, 0*sizeof(monome));
 
     int k=0;
 
@@ -171,16 +243,14 @@ monome * suppressionDoublons(monome * polynome, int * taillePolynome)
         if(polynomeBuffer[i].coeff != 0)//si le coeff est non nul
         {
             k++;
-            polynomeSortie = (monome *) realloc(polynomeSortie, k*sizeof(monome));//cré un nouvelle case dans buffer
-            polynomeSortie[k-1]=polynomeBuffer[i];//la remplit avec le monome
+            polynome = (monome *) realloc(polynome, k*sizeof(monome));//cré un nouvelle case dans buffer
+            polynome[k-1]=polynomeBuffer[i];//la remplit avec le monome
         }
     }
 
     *taillePolynome = k;//la taille du poly de sortie est de k
 
     free(polynomeBuffer);//libère le buffer
-
-    return polynomeSortie;
 }
 
 int estPresentDans(monome toTest, monome * polynome, int taillePolynome)
@@ -272,10 +342,13 @@ void displayFirstMonome(monome m)
 void displayPolynome(monome * P, int tailleP)
 {
     int i;
-
-    printf("\nP = ");
-
-    displayFirstMonome(P[0]);
+    if(!tailleP)
+        printf("\nPolynome vide");
+    else
+    {
+        printf("\nP = ");
+        displayFirstMonome(P[0]);
+    }
 
     for(i=1; i<tailleP; i++)
     {
@@ -377,25 +450,74 @@ double eval(monome * Polynome, double x)
     return out;
 }
 
-
+//saisie manuelle d'une phrase de type polynome
 monome * entrezPolynome()
 {
     monome * polynome;
 
-    char saisie[TAILLE_POLYNOME];
-    char* seps = " ";
+    char buffer[TAILLE_POLYNOME];
+    //char* seps = " ";
+    //char* fragment;
 
     printf("\nEntrez un polynome :\n");
-    gets(saisie);
+    gets(buffer);
+    printf("\n%s",buffer);
 
-    char str[] ="- This, a sample string.";
+    char* saisie = malloc(0*sizeof(char));
+    concatenerPolynome(buffer, saisie);
+
+    printf("\n%s",saisie);
+
+    //extrairePremierMonome(saisie);
+
+    free(saisie);
+    return polynome;
+}
+
+char* concatenerPolynome(char chaine[TAILLE_POLYNOME], char * out)
+{
+    int i=0, j=0;
+
+    while (chaine[i] != '\0')
+    {
+        if(chaine[i]!=' ')
+        {
+            j++;
+            out = (char *) realloc(out, j*sizeof(char));
+            out[j-1]=chaine[i];
+        }
+        i++;
+    }
+
+    out = (char *) realloc(out, (j+1)*sizeof(char));
+    out[j]='\0';
+
+    return out;
+}
+
+/*En première position uniquement :
+{signe -} {nombre entier ou décimal}
+{signe -} {X}
+{signe -} {X^} {nombre entier}
+{nombre entier ou décimal}
+{nombre entier ou décimal} {*X^} {nombre entier}
+*/
+
+/*void extrairePremierMonome(char* chaine)
+{
     char * pch;
-    printf ("Splitting string \"%s\" into tokens:\n",str);
-    pch = strtok (str," ,.-");
+    pch = strtok (saisie," ,.-");
     while (pch != NULL)
     {
         printf ("%s\n",pch);
         pch = strtok (NULL, " ,.-");
     }
-    return;
-}
+}*/
+
+/*
+Pour toutes les autres positions :
+{signe + ou -} {nombre entier ou décimal}
+{signe + ou -} {nombre entier ou décimal} {*X^} {nombre entier}
+{signe + ou -} {X^} {nombre entier}
+{signe + ou -} {X}
+*/
