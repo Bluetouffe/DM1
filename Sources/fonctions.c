@@ -51,7 +51,7 @@ char menu()//Appelle les fonctions correspondantes aux questions
 
 int valideMenu(char p)//Securise l'entrée du menu
 {
-    return ((p>='0')&&(p<='7'));
+    return ((p >= '0') && (p <=     '7'));
 }
 
 void printChoice()//affiche le menu
@@ -72,11 +72,11 @@ void exercice1()//excercice 1
 {
     char message[] = "Test de fonctionnement, AbCdE";//chaine de test
 
-    printf("\n%s\n",message);//affiche la chaine de test
+    printf("\n%s\n", message);//affiche la chaine de test
 
-    int i=0;
+    int i = 0;
 
-    while(message[i]!='\0')//tant qu'on atteint pas la fin de la chaine
+    while(message[i] != '\0')//tant qu'on atteint pas la fin de la chaine
     {
         crypt(&message[i]);//on crypte le caratère
         i++;
@@ -87,15 +87,15 @@ void exercice1()//excercice 1
 
 void crypt(char *p)//fonction de cryptage d'un caractère
 {
-    if (((*p)>='A') && ((*p)<='Z'))//Mofication d'une majuscule
+    if (((*p) >= 'A') && ((*p) <= 'Z'))//Mofication d'une majuscule
     {
-        *p=( ( (*p)-'A' ) + DECALAGE ) %26 + 'A';/*on restreint p entre 0 et 25
+        *p=(((*p)-'A') + DECALAGE) %26 + 'A';/*on restreint p entre 0 et 25
         puis on y ajoute le décalage, on restreint la valeur entre 0 et 25 puis on
         rajoute 'A' pour le code ASCII*/
     }
-    if (((*p)<='z') && ((*p)>='a'))//miniscule
+    if (((*p) <= 'z') && ((*p) >= 'a'))//miniscule
     {
-        *p=(((*p)-'a')+DECALAGE)%26 + 'a';
+        *p=(((*p) - 'a') + DECALAGE) %26 + 'a';
     }
 }
 
@@ -212,11 +212,11 @@ monome saisieMonome()
 //renvoie un monome* de taille taille polynome
 void suppressionDoublons(monome * polynome, int * taillePolynome)
 {
-    int i, j=0, estPresent=0;
+    int i, j = 0, estPresent = 0;
 
     monome * polynomeBuffer = malloc(0*sizeof(monome));
 
-    for(i=0; i<*taillePolynome; i++)//Suppressions des doublons
+    for(i = 0; i < *taillePolynome; i++)//Suppressions des doublons
     {
         //verifie que polynome de i est présent dans polBuffer, et renvoie sa position,
         // -1 le cas échéant
@@ -230,21 +230,21 @@ void suppressionDoublons(monome * polynome, int * taillePolynome)
         {
             j++;
             polynomeBuffer = (monome *) realloc(polynomeBuffer, j*sizeof(monome));//cré un nouvelle case dans buffer
-            polynomeBuffer[j-1]=polynome[i];//la remplit avec le monome
+            polynomeBuffer[j-1] = polynome[i];//la remplit avec le monome
         }
     }
 
     polynome = (monome *) realloc(polynome, 0*sizeof(monome));
 
-    int k=0;
+    int k = 0;
 
-    for(i=0; i<j; i++)//Suppression des zéros
+    for(i = 0; i < j; i++)//Suppression des zéros
     {
         if(polynomeBuffer[i].coeff != 0)//si le coeff est non nul
         {
             k++;
             polynome = (monome *) realloc(polynome, k*sizeof(monome));//cré un nouvelle case dans buffer
-            polynome[k-1]=polynomeBuffer[i];//la remplit avec le monome
+            polynome[k-1] = polynomeBuffer[i];//la remplit avec le monome
         }
     }
 
@@ -258,7 +258,7 @@ int estPresentDans(monome toTest, monome * polynome, int taillePolynome)
     int i;
     if(polynome != NULL)//si le pointeur est non NULL
     {
-        for(i=0; i<taillePolynome; i++)
+        for(i = 0; i < taillePolynome; i++)
         {
             if (toTest.exposant == polynome[i].exposant)//si on déjà le degres correspondant
                 return i;//renvoyer sa pos dans le tableau
@@ -278,11 +278,11 @@ void displayMonome(monome m)
     {
         if (m.exposant == 1)
         {
-            if(m.coeff==1)
+            if(m.coeff == 1)
                 printf(" + X ");
             else
             {
-                if(m.coeff==-1)
+                if(m.coeff == -1)
                     printf(" - X ");
                 else
                     printf("%+.2f * X ", m.coeff);
@@ -290,11 +290,11 @@ void displayMonome(monome m)
         }
         else
         {
-            if(m.coeff==1)
+            if(m.coeff == 1)
                 printf(" + X^%d ",m.exposant);
             else
             {
-                if(m.coeff==-1)
+                if(m.coeff == -1)
                     printf(" - X^%d ",m.exposant);
                 else
                     printf("%+.2f * X^%d ", m.coeff,m.exposant);
@@ -313,11 +313,11 @@ void displayFirstMonome(monome m)
     {
         if (m.exposant == 1)
         {
-            if(m.coeff==1)
+            if(m.coeff == 1)
                 printf(" X ");
             else
             {
-                if(m.coeff==-1)
+                if(m.coeff == -1)
                     printf("- X ");
                 else
                     printf("%.2f * X ", m.coeff);
@@ -325,11 +325,11 @@ void displayFirstMonome(monome m)
         }
         else
         {
-            if(m.coeff==1)
+            if(m.coeff == 1)
                 printf("X^%d ",m.exposant);
             else
             {
-                if(m.coeff==-1)
+                if(m.coeff == -1)
                     printf("- X^%d ",m.exposant);
                 else
                     printf("%.2f * X^%d ", m.coeff,m.exposant);
@@ -350,7 +350,7 @@ void displayPolynome(monome * P, int tailleP)
         displayFirstMonome(P[0]);
     }
 
-    for(i=1; i<tailleP; i++)
+    for(i = 1; i < tailleP; i++)
     {
         displayMonome(P[i]);
     }
@@ -364,7 +364,7 @@ void triPolynome(monome * P, int start, int stop)
     {
         int pivot = placerPivot(P, start, stop);//place la valeur pivot et renvoie sa position
 
-        if(!estTrie(P,start,pivot))//si le sous tableau n'est pas trié
+        if(!estTrie(P, start, pivot))//si le sous tableau n'est pas trié
             triPolynome(P, start, pivot);//on appelle la fonction entre start et pivot
 
         if(!estTrie(P, pivot+1, stop))//idem
@@ -377,7 +377,7 @@ int estTrie(monome * P, int start, int stop)
 {
     int i;
 
-    for(i=start; i<stop-1; i++)
+    for(i = start; i < stop-1; i++)
     {
         if (P[i].exposant > P[i+1].exposant)
             return 0;
@@ -390,27 +390,27 @@ int placerPivot(monome * P, int start, int stop)
 {
     int i,j, out=start;//on commence le compteur a start
 
-    for(i=start+1; i<stop; i++)
+    for(i = start+1; i < stop; i++)
     {
-        if(P[start].exposant>P[i].exposant)
+        if(P[start].exposant > P[i].exposant)
             out++;
     }
 
     monome buffer = P[start];//on échange les valeur de la première case
-    P[start]=P[out];//avec sa bonne position
-    P[out]=buffer;
+    P[start] = P[out];//avec sa bonne position
+    P[out] = buffer;
 
-    for(i=start; i<out; i++)
+    for(i = start; i < out; i++)
     {
-        if(P[i].exposant>P[out].exposant)
+        if(P[i].exposant > P[out].exposant)
         {
-            j=out+1;
-            while((P[j].exposant>P[out].exposant) && (j<stop))
+            j = out + 1;
+            while((P[j].exposant > P[out].exposant) && (j < stop))
                 j++;
 
             buffer = P[i];
-            P[i]=P[j];
-            P[j]=buffer;
+            P[i] = P[j];
+            P[j] = buffer;
         }
     }
 
@@ -426,19 +426,19 @@ void ajouterTaillePolynome(monome * P, int i)
 
 double eval(monome * Polynome, double x)
 {
-    double xPuissance=1, out = 0;
-    int puissance=0, i, cptTaille=0;
+    double xPuissance = 1, out = 0;
+    int puissance = 0, i, cptTaille = 0;
 
     while(Polynome[cptTaille].exposant != -1)
     {
         cptTaille++;
     }
 
-    for(i=0; i<cptTaille; i++)
+    for(i = 0; i < cptTaille; i++)
     {
         if(Polynome[i].exposant)
         {
-            while(puissance<Polynome[i].coeff)
+            while(puissance < Polynome[i].coeff)
             {
                 puissance++;
                 xPuissance *= x;
@@ -480,17 +480,17 @@ char* concatenerPolynome(char chaine[TAILLE_POLYNOME], char * out)
 
     while (chaine[i] != '\0')
     {
-        if(chaine[i]!=' ')
+        if(chaine[i] != ' ')
         {
             j++;
             out = (char *) realloc(out, j*sizeof(char));
-            out[j-1]=chaine[i];
+            out[j-1] = chaine[i];
         }
         i++;
     }
 
-    out = (char *) realloc(out, (j+1)*sizeof(char));
-    out[j]='\0';
+    out = (char *) realloc(out, (j+1) * sizeof(char));
+    out[j] = '\0';
 
     return out;
 }
@@ -503,16 +503,72 @@ char* concatenerPolynome(char chaine[TAILLE_POLYNOME], char * out)
 {nombre entier ou décimal} {*X^} {nombre entier}
 */
 
-/*void extrairePremierMonome(char* chaine)
+monome extrairePremierMonome(char* chaine)
 {
-    char * pch;
+    int deg;
+
+    monome out;
+
+    char* buffer;
+    char* copieChaine = chaine;
+
+    if (chaine[0] == '+')
+    {
+        printf("Erreur, signe + en première position\n");
+        //question6();
+    }
+    else
+    {
+        if (chaine[1] == 'X')
+        {
+            if((chaine[2]) == '+' || (chaine[2] == '-'))
+            {
+                out.coeff = -1;
+                out.exposant = 1;
+                return out;
+            }
+            else if(chaine[2] == '^')
+            {
+                buffer = strtok(&copieChaine[3], "+-");
+                estUnExposant(buffer, &deg);
+                if (deg != -1)
+                {
+
+                }
+            }
+        }
+    }
+
     pch = strtok (saisie," ,.-");
     while (pch != NULL)
     {
         printf ("%s\n",pch);
         pch = strtok (NULL, " ,.-");
     }
-}*/
+}
+
+void estUnExposant(char* string, int* degres)
+{
+    int i = 0;
+    char* deg = malloc(0*sizeof(char));
+
+    while(string[i] != '\0')
+    {
+
+    }
+
+    free(deg);
+}
+
+int estUnNombre(char c)
+{
+    return((c >= '0') && (c <= '9'));
+}
+
+int estUnSep(char c)
+{
+    return((c == '+') || (c == '-'));
+}
 
 /*
 Pour toutes les autres positions :
