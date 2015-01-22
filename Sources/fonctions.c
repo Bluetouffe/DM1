@@ -421,7 +421,7 @@ void ajouterTaillePolynome(monome * P, int i)
 {
     P = (monome *) realloc(P, (i+1)*sizeof(monome));
     P[i].exposant = -1;
-    P[i].coeff = 0;
+    P[i].coeff = i;
 }
 
 double eval(monome * Polynome, double x)
@@ -453,24 +453,28 @@ double eval(monome * Polynome, double x)
 //saisie manuelle d'une phrase de type polynome
 monome * entrezPolynome()
 {
-    monome * polynome;
+    monome * polynome = malloc(0*sizeof(monome));
+    int taille = 0;
 
-    char buffer[TAILLE_POLYNOME];
-    //char* seps = " ";
-    //char* fragment;
+    char buffer[TAILLE_POLYNOME]={0};
 
     printf("\nEntrez un polynome :\n");
     gets(buffer);
-    printf("\n%s",buffer);
 
     char* saisie = malloc(0*sizeof(char));
     concatenerPolynome(buffer, saisie);
 
-    printf("\n%s",saisie);
+    printf("\n%s\n",saisie);
 
-    //extrairePremierMonome(saisie);
+    taille++;
+    polynome = (monome*) realloc(polynome, taille*sizeof(monome));
+    polynome[taille-1] = extrairePremierMonome(saisie);
+
+    printf("polynome :\n");
+    displayMonome(polynome[taille]);
 
     free(saisie);
+    free(polynome);
     return polynome;
 }
 
@@ -517,7 +521,7 @@ monome extrairePremierMonome(char* chaine)
         printf("Erreur, signe + en première position\n");
         //question6();
     }
-    else
+    else if (chaine[0] == '-')
     {
         if (chaine[1] == 'X')
         {
@@ -539,25 +543,30 @@ monome extrairePremierMonome(char* chaine)
         }
     }
 
-    pch = strtok (saisie," ,.-");
+    /*pch = strtok (saisie," ,.-");
     while (pch != NULL)
     {
         printf ("%s\n",pch);
         pch = strtok (NULL, " ,.-");
-    }
+    }*/
 }
 
 void estUnExposant(char* string, int* degres)
 {
-    int i = 0;
-    char* deg = malloc(0*sizeof(char));
+    int i = 0, cptPuissance = 1;
+    //char* deg = malloc(0*sizeof(char));
 
     while(string[i] != '\0')
     {
-
+        i++;
+    }
+    while(i)
+    {
+        *degres += estUnNombre(string[i]) * cptPuissance;
+        cptPuissance *= 10;
+        i--;
     }
 
-    free(deg);
 }
 
 int estUnNombre(char c)
