@@ -40,7 +40,10 @@ void ajouterTaillePolynome(monome * P, int i);
 double eval(monome * polynome, double x);
 
 char* concatenerPolynome(char* chaine, char* out);
-void extrairePremierMonome(char* chaine);
+monome extrairePremierMonome(char* chaine);
 monome * entrezPolynome();
+void estUnExposant(char* string, int* degres);
+int estUnNombre(char c);
+int estUnSep(char c);
 
 #endif // FONCTIONS_H_INCLUDED
