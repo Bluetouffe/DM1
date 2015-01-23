@@ -510,7 +510,7 @@ void concatenerPolynome(char chaine[TAILLE_POLYNOME], char * saisie)
 
 monome extrairePremierMonome(char* chaine)
 {
-    int deg;
+    int deg = 0;
 
     monome out;
 
