@@ -3,7 +3,7 @@
 #include <string.h>
 #include "fonctions.h"
 
-char menu()//Appelle les fonctions correspondantes aux questions
+char menu(void)//Appelle les fonctions correspondantes aux questions
 {
     char selection = 'a';
 
@@ -54,7 +54,7 @@ int valideMenu(char p)//Securise l'entrée du menu
     return ((p >= '0') && (p <=     '7'));
 }
 
-void printChoice()//affiche le menu
+void printChoice(void)//affiche le menu
 {
     printf("****** MENU - DM1 ******\n\n");
     printf("\n1- Exercice 1\n");
@@ -68,7 +68,7 @@ void printChoice()//affiche le menu
     printf("Entrez un nombre pour choisir la question : ");
 }
 
-void exercice1()//excercice 1
+void exercice1(void)//excercice 1
 {
     char message[] = "Test de fonctionnement, AbCdE";//chaine de test
 
@@ -99,7 +99,7 @@ void crypt(char *p)//fonction de cryptage d'un caractère
     }
 }
 
-void question1()
+void question1(void)
 {
     printf("\n\nQuestion 1 - Saisie polynome\n");
 
@@ -117,7 +117,7 @@ void saisie(monome * polynome, int *taille)
     saisiePolynome(polynome, taille);
 }
 
-void question2()
+void question2(void)
 {
     monome * p = malloc(0*sizeof(monome));
     int taille = 0;
@@ -132,7 +132,7 @@ void question2()
     free(p);
 }
 
-void question3()
+void question3(void)
 {
     monome * p = malloc(0*sizeof(monome));
     int taille = 0;
@@ -147,12 +147,12 @@ void question3()
     free(p);
 }
 
-void question4()
+void question4(void)
 {
     question3();
 }
 
-void question5()
+void question5(void)
 {
     monome * p = malloc(0*sizeof(monome));
     int taille = 0;
@@ -193,7 +193,7 @@ void saisiePolynome(monome * Polynome, int * i)//Saisie d'un polynome
     }while(buffer.exposant != -1);//condition de sortie exposant==-1
 }
 
-monome saisieMonome()
+monome saisieMonome(void)
 {
     monome out;
 
@@ -453,7 +453,7 @@ double eval(monome * Polynome, double x)
 
 //saisie manuelle d'une phrase de type polynome
 //monome * entrezPolynome()
-void entrezPolynome()
+void entrezPolynome(void)
 {
     monome * polynome = NULL;
     polynome = malloc(0*sizeof(monome));
@@ -464,7 +464,9 @@ void entrezPolynome()
     printf("\nEntrez un polynome :\n");
     gets(buffer);
 
-    char* saisie = malloc(0*sizeof(char));
+    //char * saisie = (char *) malloc(0*sizeof(char));
+    char * saisie = malloc(0*sizeof(char));
+
     concatenerPolynome(buffer, saisie);
 
     printf("\nsaisie: %s\n",saisie);
@@ -474,36 +476,35 @@ void entrezPolynome()
     polynome[taille-1] = extrairePremierMonome(saisie);
 
     printf("polynome :\n");
-    displayMonome(polynome[taille]);
+    displayMonome(polynome[0]);
 
     free(saisie);
     free(polynome);
     //return polynome;
 }
 
-void concatenerPolynome(char chaine[TAILLE_POLYNOME], char * saisie)
+void concatenerPolynome(char chaine[TAILLE_POLYNOME], char * sortie)
 {
     int i=0, j=0;
+    sortie = (char* ) realloc(sortie, 0*sizeof(char));
 
-    while (chaine[i] != '\0')
+    do
     {
         if(chaine[i] != ' ')
         {
             j++;
-            saisie = (char *) realloc(saisie, j*sizeof(char));
-            saisie[j-1] = chaine[i];
+            sortie = (char *) realloc(sortie, j*sizeof(char));
+            sortie[j-1] = chaine[i];
+            printf("%c", sortie[j-1]);
         }
         i++;
-    }
-
-    saisie = (char *) realloc(saisie, (j+1) * sizeof(char));
-    saisie[j] = '\0';
+    }while (chaine[i-1] != '\0');
 }
 
 /*En première position uniquement :
 {signe -} {nombre entier ou décimal}
-{signe -} {X}
-{signe -} {X^} {nombre entier}
+{signe -} {X}fait
+{signe -} {X^} {nombre entier}fait
 {nombre entier ou décimal}
 {nombre entier ou décimal} {*X^} {nombre entier}
 */
@@ -511,8 +512,13 @@ void concatenerPolynome(char chaine[TAILLE_POLYNOME], char * saisie)
 monome extrairePremierMonome(char* chaine)
 {
     int deg = 0;
+    float exposant;
+
+    char seps[3] = {'+', '-', '\0'};
 
     monome out;
+    out.coeff = 0;
+    out.exposant = 0;
 
     char* buffer;
     char* copieChaine = chaine;
@@ -521,63 +527,85 @@ monome extrairePremierMonome(char* chaine)
     {
         printf("Erreur, signe + en première position\n");
         //question6();
-    }
+    }//+
     else if (chaine[0] == '-')
     {
         if (chaine[1] == 'X')
         {
-            if((chaine[2]) == '+' || (chaine[2] == '-'))
+            if(estUnSep(chaine[2]))
             {
                 out.coeff = -1;
                 out.exposant = 1;
                 return out;
-            }
+            }//estunseparateur
             else if(chaine[2] == '^')
             {
-                buffer = strtok(&copieChaine[3], "+-");
+                buffer = strtok(copieChaine+3, seps);
                 estUnExposant(buffer, &deg);
                 if (deg != -1)
                 {
-
-                }
+                    out.coeff = -1;
+                    out.exposant = deg;
+                    return out;
+                }//deg valide
+            }//signe puissance
+        }//X
+        else
+        {
+            buffer = strtok(copieChaine+1, seps);
+            printf("\nbuffer=%s", buffer);
+            estUnExposant(buffer, &deg);
+            printf("\ndegres=%d\n",deg);
+            if (deg != -1)
+            {
+                out.coeff = -1;
+                out.exposant = deg;
+                return out;
             }
         }
-    }
-
-    /*pch = strtok (saisie," ,.-");
-    while (pch != NULL)
-    {
-        printf ("%s\n",pch);
-        pch = strtok (NULL, " ,.-");
-    }*/
+    }//-
+    return out;
 }
 
 void estUnExposant(char* string, int* degres)
 {
-    int i = 0, cptPuissance = 1;
+    int i = 0, cptPuissance = 1, buffer;
     //char* deg = malloc(0*sizeof(char));
+    *degres = -1;
 
-    while(string[i] != '\0')
-    {
-        i++;
-    }
+    i = strlen(string);
+
+    if (i)
+        *degres = 0;
+
     while(i)
     {
-        *degres += estUnNombre(string[i-1]) * cptPuissance;
-        cptPuissance *= 10;
-        i--;
+        buffer = estUnNombre(string[i-1]);
+        if(buffer != -1)
+        {
+            *degres += (buffer * cptPuissance);
+            printf("\ndeg=%d", *degres);
+            cptPuissance *= 10;
+            i--;
+        }
+        else
+        {
+            printf("Erreur, pas un nombre entier");
+            menu();
+        }
     }
-
 }
 
 int estUnNombre(char c)
 {
-    return((c >= '0') && (c <= '9'));
+    if((c >= '0') && (c <= '9'))
+        return (c-'0');
+    return (-1);
 }
 
 int estUnSep(char c)
 {
-    return((c == '+') || (c == '-'));
+    return(((c == '+') || (c == '-')) || (c == '\0'));
 }
 
 /*
