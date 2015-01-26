@@ -464,7 +464,7 @@ void entrezPolynome(void)
     monome* polynome = NULL;
     polynome = malloc(0*sizeof(monome));
 
-    int taille = 0;
+    int taille = 0, tailleMonome = 0;
     char buffer[TAILLE_POLYNOME]= {0};
 
     printf("\nEntrez un polynome :\n");
@@ -480,14 +480,14 @@ void entrezPolynome(void)
 
     taille++;
     polynome = (monome*) realloc(polynome, taille*sizeof(monome));
-    polynome[taille-1] = premierMonome(saisie);
+    polynome[taille-1] = premierMonome(saisie, &tailleMonome);
+    saisie += tailleMonome;
 
     printf("\nPolynome :\n");
     displayPolynome(polynome, taille);
 
     free(saisie);
     free(polynome);
-    //return polynome;
 }
 
 void concatenerPolynome(char chaine[TAILLE_POLYNOME], char* sortie)
@@ -536,7 +536,7 @@ int main ()
   return 0;
 }*/
 
-monome premierMonome(char* chaine)
+monome premierMonome(char* chaine, int* length)
 {
     char* extrait;
     char* buffer = (char*) malloc(strlen(chaine) * sizeof(char));
@@ -547,14 +547,19 @@ monome premierMonome(char* chaine)
     char separateurs[] = {'+','-','\0'};
 
     out.coeff = 1;
-    if (*
-        buffer == '-')
+    if (*buffer == '-')
     {
         out.coeff = -1;
         extrait = strtok(buffer + 1, separateurs);
+        *length = strlen(extrait) + 1;
     }
     else
+    {
         extrait = strtok(buffer, separateurs);
+        *length = strlen(extrait);
+    }
+
+    printf("\ntaille = %d", *length);
 
     if(estUnMonomeValide(extrait))
     {
@@ -583,6 +588,7 @@ monome premierMonome(char* chaine)
         out.exposant = 0;
     }
 
+    free(buffer);
     return out;
 }
 
