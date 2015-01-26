@@ -7,45 +7,45 @@ char menu(void)//Appelle les fonctions correspondantes aux questions
 {
     char selection = 'a';
 
-        while(!valideMenu(selection))//tant que la selection n'est pas valide
-        {
-            printf("\n");
-            printChoice();//reafficher le menu
-            fflush(stdin);
-            selection = getchar();
-            fflush(stdin);
-        };
+    while(!valideMenu(selection))//tant que la selection n'est pas valide
+    {
+        printf("\n");
+        printChoice();//reafficher le menu
+        fflush(stdin);
+        selection = getchar();
+        fflush(stdin);
+    };
 
-        switch (selection)//appel des questions
-        {
-            case '0'://quitter le menu
-                system("exit");
-                break;
-            case '1'://appelle l'exo 1
-                exercice1();
-                break;
-            case '2'://appelle la question 2
-                question1();
-                break;
-            case '3':
-                question2();
-                break;
-            case '4':
-                question3();
-                break;
-            case '5':
-                question4();
-                break;
-            case '6':
-                question5();
-                break;
-            case '7':
-                entrezPolynome();
-                break;
-            default://cas par défaut
-                exit(-1);
-                break;
-        }
+    switch (selection)//appel des questions
+    {
+    case '0'://quitter le menu
+        system("exit");
+        break;
+    case '1'://appelle l'exo 1
+        exercice1();
+        break;
+    case '2'://appelle la question 2
+        question1();
+        break;
+    case '3':
+        question2();
+        break;
+    case '4':
+        question3();
+        break;
+    case '5':
+        question4();
+        break;
+    case '6':
+        question5();
+        break;
+    case '7':
+        entrezPolynome();
+        break;
+    default://cas par défaut
+        exit(-1);
+        break;
+    }
     return selection;
 }
 
@@ -181,7 +181,8 @@ void saisiePolynome(monome* Polynome, int* i)//Saisie d'un polynome
 
     monome buffer;
 
-    do{
+    do
+    {
         buffer = saisieMonome();//on remplit un monome
 
         if(buffer.exposant != -1)//on vérifie qu'il ne correspond pas a la condition de sortie
@@ -190,7 +191,8 @@ void saisiePolynome(monome* Polynome, int* i)//Saisie d'un polynome
             Polynome = (monome*) realloc (Polynome, (*i)*sizeof(monome));//on augmente de 1 la taille du polynome
             Polynome[(*i)-1] = buffer;//qu'on remplit avec le buffer
         }
-    }while(buffer.exposant != -1);//condition de sortie exposant==-1
+    }
+    while(buffer.exposant != -1); //condition de sortie exposant==-1
 }
 
 monome saisieMonome(void)
@@ -199,12 +201,14 @@ monome saisieMonome(void)
 
     printf("Saisir un Monome: entrez -1 pour quitter");
 
-    do{
+    do
+    {
         printf("\nDegres : ");
         scanf("%d", &out.exposant);
         printf("\nCoefficient : ");
         scanf("%f", &out.coeff);
-    }while(out.exposant < -1);//une erreur si l'exposant est négatif
+    }
+    while(out.exposant < -1); //une erreur si l'exposant est négatif
 
     return out;
 }
@@ -459,16 +463,14 @@ void entrezPolynome(void)
     polynome = malloc(0*sizeof(monome));
 
     int taille = 0;
-    char buffer[TAILLE_POLYNOME]={0};
+    char buffer[TAILLE_POLYNOME]= {0};
 
     printf("\nEntrez un polynome :\n");
-	fflush(stdin);
+    fflush(stdin);
     gets(buffer);
-	fflush(stdin);
+    fflush(stdin);
 
-    //char * saisie = (char *) malloc(0*sizeof(char));
     char* saisie = malloc(0*sizeof(char));
-    printf("\nsaisie: %s\n",buffer);
 
     concatenerPolynome(buffer, saisie);
 
@@ -489,19 +491,26 @@ void entrezPolynome(void)
 void concatenerPolynome(char chaine[TAILLE_POLYNOME], char* sortie)
 {
     int i=0, j=0;
-    //sortie = (char* ) realloc(sortie, 0*sizeof(char));
+    char* sortieBuffer = malloc(0*sizeof(char));
+    //sortieBuffer = (char* ) realloc(sortieBuffer, 0*sizeof(char));
 
     do
     {
         if(chaine[i] != ' ')
         {
             j++;
-            sortie = (char *) realloc(sortie, j*sizeof(char));
-            sortie[j-1] = chaine[i];
-            printf("%c", sortie[j-1]);
+            sortieBuffer = (char *) realloc(sortieBuffer, j*sizeof(char));
+            sortieBuffer[j-1] = chaine[i];
+            printf("%c", sortieBuffer[j-1]);
         }
         i++;
-    }while (chaine[i-1] != '\0');
+    }
+    while (chaine[i-1] != '\0');
+    sortie = (char *) realloc(sortie, (j+1)*sizeof(char));
+    sortie[j] = '\0';
+    strcpy(sortie, sortieBuffer);
+
+    free(sortieBuffer);
 }
 
 /*En première position uniquement :
@@ -531,10 +540,10 @@ int main ()
 
 monome premierMonome(char* chaine)
 {
-	char* extrait;
-	monome out;
+    char* extrait;
+    monome out;
 
-    char separateurs[] = "+-\0";
+    char separateurs[] = {'+','-','\0'};
 
     out.coeff = 1;
     if (*chaine == '-')
@@ -545,9 +554,9 @@ monome premierMonome(char* chaine)
     else
         extrait = strtok(chaine, separateurs);
 
-	printf("\nextrait = %s", extrait);
+    printf("\nextrait = %s", extrait);
 
-	if(estUnMonomeValide(extrait))
+    if(estUnMonomeValide(extrait))
     {
         if(*extrait == 'X')
             out.coeff *= 1;
@@ -578,7 +587,11 @@ monome premierMonome(char* chaine)
 
 int estUnMonomeValide(char* chaine)
 {
-	int i = 0, out = 1;
+    int i = 0, out = 1;
+
+    if (chaine == NULL)
+        return 0;
+
     char signeApparaissantUneFois[] = "+-X*^.";
 
     while(signeApparaissantUneFois[i-1] != '.')
@@ -588,19 +601,19 @@ int estUnMonomeValide(char* chaine)
     }
 
     //Combinaisons incompatible:
-    out &= (!(nbrOccChar(chaine, 'X')) && nbrOccChar(chaine, '*'));
-    out &= (!(nbrOccChar(chaine, 'X')) && nbrOccChar(chaine, '^'));
-    out &= (!(nbrOccChar(chaine, '.')) && nbrOccChar(chaine, '*'));
+    out &= !(!(nbrOccChar(chaine, 'X')) && nbrOccChar(chaine, '*'));
+    out &= !(!(nbrOccChar(chaine, 'X')) && nbrOccChar(chaine, '^'));
+    out &= !(!(nbrOccChar(chaine, '*')) && nbrOccChar(chaine, '.'));
 
-    #ifdef DEBUG
-    out = 1;
-    #endif // DEBUG
-	return (out);
+    return (out);
 }
 
 int nbrOccChar(char* chaine, char c)
 {
     int i = 0, out = 0;
+
+    if (chaine == NULL)
+        return out;
 
     while(chaine[i] != '\0')
     {
