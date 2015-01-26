@@ -276,7 +276,8 @@ void displayMonome(monome m)
 {
     if(m.exposant == 0)
     {
-        printf("%+.2f ", m.coeff);
+        if(m.coeff!=0)
+            printf("%+.2f ", m.coeff);
     }
     else
     {
@@ -311,7 +312,8 @@ void displayFirstMonome(monome m)
 {
     if(m.exposant == 0)
     {
-        printf("%.2f ", m.coeff);
+        if (m.coeff != 0)
+            printf("%.2f ", m.coeff);
     }
     else
     {
@@ -554,8 +556,6 @@ monome premierMonome(char* chaine)
     else
         extrait = strtok(chaine, separateurs);
 
-    printf("\nextrait = %s", extrait);
-
     if(estUnMonomeValide(extrait))
     {
         if(*extrait == 'X')
@@ -580,6 +580,11 @@ monome premierMonome(char* chaine)
             }
         }
         else out.exposant  = 0;
+    }
+    else
+    {
+        out.coeff = 0;
+        out.exposant = 0;
     }
 
     return out;
