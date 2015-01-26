@@ -85,7 +85,7 @@ void exercice1(void)//excercice 1
     printf("%s\n", message);//affiche la chaine cryptée
 }
 
-void crypt(char *p)//fonction de cryptage d'un caractère
+void crypt(char* p)//fonction de cryptage d'un caractère
 {
     if (((*p) >= 'A') && ((*p) <= 'Z'))//Mofication d'une majuscule
     {
@@ -112,7 +112,7 @@ void question1(void)
     free(p);
 }
 
-void saisie(monome * polynome, int *taille)
+void saisie(monome* polynome, int* taille)
 {
     saisiePolynome(polynome, taille);
 }
@@ -175,7 +175,7 @@ void question5(void)
     free(p);
 }
 
-void saisiePolynome(monome * Polynome, int * i)//Saisie d'un polynome
+void saisiePolynome(monome* Polynome, int* i)//Saisie d'un polynome
 {
     *i=0;
 
@@ -210,7 +210,7 @@ monome saisieMonome(void)
 }
 
 //renvoie un monome* de taille taille polynome
-void suppressionDoublons(monome * polynome, int * taillePolynome)
+void suppressionDoublons(monome* polynome, int* taillePolynome)
 {
     int i, j = 0, estPresent = 0;
 
@@ -253,7 +253,7 @@ void suppressionDoublons(monome * polynome, int * taillePolynome)
     free(polynomeBuffer);//libère le buffer
 }
 
-int estPresentDans(monome toTest, monome * polynome, int taillePolynome)
+int estPresentDans(monome toTest, monome* polynome, int taillePolynome)
 {
     int i;
     if(polynome != NULL)//si le pointeur est non NULL
@@ -339,7 +339,7 @@ void displayFirstMonome(monome m)
 }
 
 //affichage d'un polynome
-void displayPolynome(monome * P, int tailleP)
+void displayPolynome(monome* P, int tailleP)
 {
     int i;
     if(!tailleP)
@@ -357,7 +357,7 @@ void displayPolynome(monome * P, int tailleP)
 }
 
 //tri par dichotomie recursive
-void triPolynome(monome * P, int start, int stop)
+void triPolynome(monome* P, int start, int stop)
 {
 
     if (!estTrie(P, start, stop))//si le tableau n'est pas déjà trié
@@ -373,7 +373,7 @@ void triPolynome(monome * P, int start, int stop)
 }
 
 //verifie qu'un polynome soit trié
-int estTrie(monome * P, int start, int stop)
+int estTrie(monome* P, int start, int stop)
 {
     int i;
 
@@ -386,7 +386,7 @@ int estTrie(monome * P, int start, int stop)
 }
 
 //place le pivot et échange les valeurs gauche et droite
-int placerPivot(monome * P, int start, int stop)
+int placerPivot(monome* P, int start, int stop)
 {
     int i,j, out=start;//on commence le compteur a start
 
@@ -417,7 +417,7 @@ int placerPivot(monome * P, int start, int stop)
     return out;
 }
 
-void ajouterTaillePolynome(monome * P, int i)
+void ajouterTaillePolynome(monome* P, int i)
 {
     P = (monome *) realloc(P, (i+1)*sizeof(monome));
     P[i].exposant = -1;
@@ -425,7 +425,7 @@ void ajouterTaillePolynome(monome * P, int i)
     printf("\ni=%d\n",i);
 }
 
-double eval(monome * Polynome, double x)
+double eval(monome* Polynome, double x)
 {
     double xPuissance = 1, out = 0;
     int puissance = 0, i, cptTaille = 0;
@@ -455,17 +455,19 @@ double eval(monome * Polynome, double x)
 //monome * entrezPolynome()
 void entrezPolynome(void)
 {
-    monome * polynome = NULL;
+    monome* polynome = NULL;
     polynome = malloc(0*sizeof(monome));
-    int taille = 0;
 
+    int taille = 0;
     char buffer[TAILLE_POLYNOME]={0};
 
     printf("\nEntrez un polynome :\n");
+	fflush(stdin);
     gets(buffer);
+	fflush(stdin);
 
     //char * saisie = (char *) malloc(0*sizeof(char));
-    char * saisie = malloc(0*sizeof(char));
+    char* saisie = malloc(0*sizeof(char));
 
     concatenerPolynome(buffer, saisie);
 
@@ -473,9 +475,9 @@ void entrezPolynome(void)
 
     taille++;
     polynome = (monome*) realloc(polynome, taille*sizeof(monome));
-    polynome[taille-1] = extrairePremierMonome(saisie);
+    polynome[taille-1] = premierMonome(saisie);
 
-    printf("polynome :\n");
+    printf("\npolynome :\n");
     displayMonome(polynome[0]);
 
     free(saisie);
@@ -483,7 +485,7 @@ void entrezPolynome(void)
     //return polynome;
 }
 
-void concatenerPolynome(char chaine[TAILLE_POLYNOME], char * sortie)
+void concatenerPolynome(char chaine[TAILLE_POLYNOME], char* sortie)
 {
     int i=0, j=0;
     sortie = (char* ) realloc(sortie, 0*sizeof(char));
@@ -509,6 +511,105 @@ void concatenerPolynome(char chaine[TAILLE_POLYNOME], char * sortie)
 {nombre entier ou décimal} {*X^} {nombre entier}
 */
 
+/*#include <stdio.h>
+#include <string.h>
+
+int main ()
+{
+  char str[] ="- This, a sample string.";
+  char * pch;
+  printf ("Splitting string \"%s\" into tokens:\n",str);
+  pch = strtok (str," ,.-");
+  while (pch != NULL)
+  {
+    printf ("%s\n",pch);
+    pch = strtok (NULL, " ,.-");
+  }
+  return 0;
+}*/
+
+monome premierMonome(char* chaine)
+{
+	char* extrait;
+	monome out;
+
+    out.coeff = 1;
+    if (*chaine == '-')
+    {
+        out.coeff = -1;
+        chaine++;
+    }
+
+	char separateurs[] = "+-\0";
+	extrait = strtok(chaine, separateurs);
+	printf("\nextrait = %s", extrait);
+
+	if(estUnMonomeValide(extrait))
+    {
+        if(*chaine == 'X')
+            out.coeff *= 1;
+        else
+            out.coeff*=atof(extrait);
+
+        printf("\ncoeff = %f", out.coeff);
+        if(nbrOccChar(extrait, 'X'))
+        {
+            if(nbrOccChar(extrait, '^'))
+            {
+                out.exposant = atoi(strchr(extrait, '^') + 1);
+                printf("\nexp = %d",out.exposant);
+            }
+            else
+            {
+                out.exposant = 1;
+                printf("\nexp = %d",out.exposant);
+            }
+        }
+        else out.exposant  = 0;
+    }
+
+    return out;
+}
+
+int estUnMonomeValide(char* chaine)
+{
+	int i = 0, out = 1;
+    char signeApparaissantUneFois[] = "+-X*^.";
+
+    while(signeApparaissantUneFois[i-1] != '.')
+    {
+        out &= (nbrOccChar(chaine, signeApparaissantUneFois[i]) <= 1);
+        i++;
+    }
+
+    //Combinaisons incompatible:
+    out &= (!(nbrOccChar(chaine, 'X')) && nbrOccChar(chaine, '*'));
+    out &= (!(nbrOccChar(chaine, 'X')) && nbrOccChar(chaine, '^'));
+    out &= (!(nbrOccChar(chaine, '.')) && nbrOccChar(chaine, '*'));
+
+    #ifdef DEBUG
+    out = 1;
+    #endif // DEBUG
+	return (out);
+}
+
+int nbrOccChar(char* chaine, char c)
+{
+    int i = 0, out = 0;
+
+    while(chaine[i] != '\0')
+    {
+        if(chaine[i] == c)
+        {
+            out++;
+        }
+        i++;
+    }
+
+    return out;
+}
+
+/*
 monome extrairePremierMonome(char* chaine)
 {
     int deg = 0;
@@ -566,7 +667,7 @@ monome extrairePremierMonome(char* chaine)
     }//-
     return out;
 }
-
+*/
 void estUnExposant(char* string, int* degres)
 {
     int i = 0, cptPuissance = 1, buffer;
