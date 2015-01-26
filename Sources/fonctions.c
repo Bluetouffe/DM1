@@ -468,6 +468,7 @@ void entrezPolynome(void)
 
     //char * saisie = (char *) malloc(0*sizeof(char));
     char* saisie = malloc(0*sizeof(char));
+    printf("\nsaisie: %s\n",buffer);
 
     concatenerPolynome(buffer, saisie);
 
@@ -488,7 +489,7 @@ void entrezPolynome(void)
 void concatenerPolynome(char chaine[TAILLE_POLYNOME], char* sortie)
 {
     int i=0, j=0;
-    sortie = (char* ) realloc(sortie, 0*sizeof(char));
+    //sortie = (char* ) realloc(sortie, 0*sizeof(char));
 
     do
     {
@@ -533,29 +534,33 @@ monome premierMonome(char* chaine)
 	char* extrait;
 	monome out;
 
+    char separateurs[] = "+-\0";
+
     out.coeff = 1;
     if (*chaine == '-')
     {
         out.coeff = -1;
-        chaine++;
+        extrait = strtok(chaine + 1, separateurs);
     }
+    else
+        extrait = strtok(chaine, separateurs);
 
-	char separateurs[] = "+-\0";
-	extrait = strtok(chaine, separateurs);
 	printf("\nextrait = %s", extrait);
 
 	if(estUnMonomeValide(extrait))
     {
-        if(*chaine == 'X')
+        if(*extrait == 'X')
             out.coeff *= 1;
         else
-            out.coeff*=atof(extrait);
+            out.coeff *= atof(extrait);
 
         printf("\ncoeff = %f", out.coeff);
+
         if(nbrOccChar(extrait, 'X'))
         {
             if(nbrOccChar(extrait, '^'))
             {
+
                 out.exposant = atoi(strchr(extrait, '^') + 1);
                 printf("\nexp = %d",out.exposant);
             }
