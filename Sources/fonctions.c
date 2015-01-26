@@ -103,13 +103,13 @@ void question1(void)
 {
     printf("\n\nQuestion 1 - Saisie polynome\n");
 
-    monome * p = malloc(0*sizeof(monome));
+    monome * p1 = malloc(0*sizeof(monome));
     int taille = 0;
-    saisie(p, &taille);
+    saisie(p1, &taille);
 
-    displayPolynome(p, taille);//affichage du polynome saisie
+    displayPolynome(p1, taille);//affichage du polynome saisie
 
-    free(p);
+    free(p1);
 }
 
 void saisie(monome* polynome, int* taille)
@@ -119,32 +119,32 @@ void saisie(monome* polynome, int* taille)
 
 void question2(void)
 {
-    monome * p = malloc(0*sizeof(monome));
+    monome * p2 = malloc(0*sizeof(monome));
     int taille = 0;
-    saisie(p, &taille);
+    saisie(p2, &taille);
 
-    suppressionDoublons(p, &taille);//suppression des doublons et des zéros
+    suppressionDoublons(p2, &taille);//suppression des doublons et des zéros
 
     printf("\nPolynome reduit:\n");
 
-    displayPolynome(p, taille);//affichage du polynome réduit
+    displayPolynome(p2, taille);//affichage du polynome réduit
 
-    free(p);
+    free(p2);
 }
 
 void question3(void)
 {
-    monome * p = malloc(0*sizeof(monome));
+    monome * p3 = malloc(0*sizeof(monome));
     int taille = 0;
-    saisie(p, &taille);
+    saisie(p3, &taille);
 
-    suppressionDoublons(p, &taille);
+    suppressionDoublons(p3, &taille);
 
-    triPolynome(p, 0, taille);
+    triPolynome(p3, 0, taille);
     printf("\ntableau trié:\n");
-    displayPolynome(p, taille);
+    displayPolynome(p3, taille);
 
-    free(p);
+    free(p3);
 }
 
 void question4(void)
@@ -154,25 +154,25 @@ void question4(void)
 
 void question5(void)
 {
-    monome * p = malloc(0*sizeof(monome));
+    monome * p5 = malloc(0*sizeof(monome));
     int taille = 0;
     double x;
-    saisie(p, &taille);
+    saisie(p5, &taille);
 
-    suppressionDoublons(p, &taille);
+    suppressionDoublons(p5, &taille);
 
-    triPolynome(p, 0, taille);
+    triPolynome(p5, 0, taille);
     printf("\n");
-    displayPolynome(p, taille);
+    displayPolynome(p5, taille);
 
-    ajouterTaillePolynome(p, taille);
+    ajouterTaillePolynome(p5, taille);
 
     printf("Entrez le nombre a évaluer :");
     scanf("%lf", &x);
 
-    printf("\nP(x)= %.2f\n", eval(p, x));
+    printf("\nP(x)= %.2f\n", eval(p5, x));
 
-    free(p);
+    free(p5);
 }
 
 void saisiePolynome(monome* Polynome, int* i)//Saisie d'un polynome
@@ -476,14 +476,14 @@ void entrezPolynome(void)
 
     concatenerPolynome(buffer, saisie);
 
-    printf("\nsaisie: %s\n",saisie);
+    printf("\nSaisie: %s\n",saisie);
 
     taille++;
     polynome = (monome*) realloc(polynome, taille*sizeof(monome));
     polynome[taille-1] = premierMonome(saisie);
 
-    printf("\npolynome :\n");
-    displayMonome(polynome[0]);
+    printf("\nPolynome :\n");
+    displayPolynome(polynome, taille);
 
     free(saisie);
     free(polynome);
@@ -503,7 +503,6 @@ void concatenerPolynome(char chaine[TAILLE_POLYNOME], char* sortie)
             j++;
             sortieBuffer = (char *) realloc(sortieBuffer, j*sizeof(char));
             sortieBuffer[j-1] = chaine[i];
-            printf("%c", sortieBuffer[j-1]);
         }
         i++;
     }
@@ -515,17 +514,14 @@ void concatenerPolynome(char chaine[TAILLE_POLYNOME], char* sortie)
     free(sortieBuffer);
 }
 
-/*En première position uniquement :
+/*
 {signe -} {nombre entier ou décimal}
 {signe -} {X}fait
 {signe -} {X^} {nombre entier}fait
 {nombre entier ou décimal}
 {nombre entier ou décimal} {*X^} {nombre entier}
 */
-
-/*#include <stdio.h>
-#include <string.h>
-
+/*
 int main ()
 {
   char str[] ="- This, a sample string.";
@@ -543,18 +539,22 @@ int main ()
 monome premierMonome(char* chaine)
 {
     char* extrait;
+    char* buffer = (char*) malloc(strlen(chaine) * sizeof(char));
+    strcpy(buffer, chaine);
+
     monome out;
 
     char separateurs[] = {'+','-','\0'};
 
     out.coeff = 1;
-    if (*chaine == '-')
+    if (*
+        buffer == '-')
     {
         out.coeff = -1;
-        extrait = strtok(chaine + 1, separateurs);
+        extrait = strtok(buffer + 1, separateurs);
     }
     else
-        extrait = strtok(chaine, separateurs);
+        extrait = strtok(buffer, separateurs);
 
     if(estUnMonomeValide(extrait))
     {
@@ -563,20 +563,16 @@ monome premierMonome(char* chaine)
         else
             out.coeff *= atof(extrait);
 
-        printf("\ncoeff = %f", out.coeff);
-
         if(nbrOccChar(extrait, 'X'))
         {
             if(nbrOccChar(extrait, '^'))
             {
 
                 out.exposant = atoi(strchr(extrait, '^') + 1);
-                printf("\nexp = %d",out.exposant);
             }
             else
             {
                 out.exposant = 1;
-                printf("\nexp = %d",out.exposant);
             }
         }
         else out.exposant  = 0;
@@ -588,6 +584,11 @@ monome premierMonome(char* chaine)
     }
 
     return out;
+}
+
+monome extraitMonome(char* chaine)
+{
+
 }
 
 int estUnMonomeValide(char* chaine)
@@ -632,66 +633,8 @@ int nbrOccChar(char* chaine, char c)
     return out;
 }
 
-/*
-monome extrairePremierMonome(char* chaine)
-{
-    int deg = 0;
-    float exposant;
 
-    char seps[3] = {'+', '-', '\0'};
-
-    monome out;
-    out.coeff = 0;
-    out.exposant = 0;
-
-    char* buffer;
-    char* copieChaine = chaine;
-
-    if (chaine[0] == '+')
-    {
-        printf("Erreur, signe + en première position\n");
-        //question6();
-    }//+
-    else if (chaine[0] == '-')
-    {
-        if (chaine[1] == 'X')
-        {
-            if(estUnSep(chaine[2]))
-            {
-                out.coeff = -1;
-                out.exposant = 1;
-                return out;
-            }//estunseparateur
-            else if(chaine[2] == '^')
-            {
-                buffer = strtok(copieChaine+3, seps);
-                estUnExposant(buffer, &deg);
-                if (deg != -1)
-                {
-                    out.coeff = -1;
-                    out.exposant = deg;
-                    return out;
-                }//deg valide
-            }//signe puissance
-        }//X
-        else
-        {
-            buffer = strtok(copieChaine+1, seps);
-            printf("\nbuffer=%s", buffer);
-            estUnExposant(buffer, &deg);
-            printf("\ndegres=%d\n",deg);
-            if (deg != -1)
-            {
-                out.coeff = -1;
-                out.exposant = deg;
-                return out;
-            }
-        }
-    }//-
-    return out;
-}
-*/
-void estUnExposant(char* string, int* degres)
+/*void estUnExposant(char* string, int* degres)
 {
     int i = 0, cptPuissance = 1, buffer;
     //char* deg = malloc(0*sizeof(char));
@@ -730,7 +673,7 @@ int estUnNombre(char c)
 int estUnSep(char c)
 {
     return(((c == '+') || (c == '-')) || (c == '\0'));
-}
+}*/
 
 /*
 Pour toutes les autres positions :
