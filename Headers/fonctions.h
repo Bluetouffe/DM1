@@ -3,7 +3,6 @@
 
 #define DECALAGE 5
 #define TAILLE_POLYNOME 1024
-#define DEBUG
 
 typedef struct monome{
     float coeff;
