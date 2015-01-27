@@ -461,10 +461,10 @@ double eval(monome* Polynome, double x)
 //monome * entrezPolynome()
 void entrezPolynome(void)
 {
-    monome* polynome = NULL;
-    polynome = malloc(0*sizeof(monome));
+    //monome* polynome = NULL;
+    //polynome = malloc(0*sizeof(monome));
 
-    int taille = 0, tailleMonome = 0;
+    int taille = 0, tailleMonome = 0, taillePolynome;
     char buffer[TAILLE_POLYNOME]= {0};
 
     printf("\nEntrez un polynome :\n");
@@ -476,18 +476,18 @@ void entrezPolynome(void)
 
     concatenerPolynome(buffer, saisie);
 
+    taillePolynome = nbrOccChar(saisie, '-') + nbrOccChar(saisie, '+') + 1;
+    printf("\ntaille polynome: %d", taillePolynome);
+    //monome* polynome = NULL;
+    monome* polynome = calloc(taillePolynome,sizeof(monome));
+
     //pour debug
     //printf("\nSaisie: %s\n",saisie);
-
-    /*taille++;
-    polynome = (monome*) realloc(polynome, taille*sizeof(monome));
-    polynome[taille-1] = premierMonome(saisie, &tailleMonome);
-    saisie += tailleMonome;*/
 
     while(strlen(saisie) != 0)
     {
         taille++;
-        polynome = (monome*) realloc(polynome, taille*sizeof(monome));
+        //polynome = (monome*) realloc(polynome, taille*sizeof(monome));
 
         if(taille == 1)
             polynome[taille-1] = premierMonome(saisie, &tailleMonome);
@@ -545,7 +545,7 @@ void concatenerPolynome(char chaine[TAILLE_POLYNOME], char* sortie)
 monome premierMonome(char* chaine, int* length)
 {
     char* extrait;
-    char* buffer = (char*) malloc(strlen(chaine) * sizeof(char));
+    char* buffer = (char*) calloc(strlen(chaine)+1, sizeof(char));
     strcpy(buffer, chaine);
 
     monome out;
@@ -564,8 +564,8 @@ monome premierMonome(char* chaine, int* length)
         extrait = strtok(buffer, separateurs);
         *length = strlen(extrait);
     }
-
-    printf("\ntaille = %d", *length);
+    //pour debug
+    //printf("\ntaille = %d", *length);
 
     if(estUnMonomeValide(extrait))
     {
@@ -608,7 +608,7 @@ Pour toutes les autres positions :
 monome extraitMonome(char* chaine, int* length)
 {
     char* extrait;
-    char* buffer = (char*) malloc(strlen(chaine) * sizeof(char));
+    char* buffer = (char*) calloc(strlen(chaine)+1, sizeof(char));
     strcpy(buffer, chaine);
 
     monome out;
@@ -627,8 +627,8 @@ monome extraitMonome(char* chaine, int* length)
         extrait = strtok(buffer+1, separateurs);
         *length = strlen(extrait) + 1;
     }
-
-    printf("\ntaille = %d", *length);
+    //pour debug
+    //printf("\ntaille = %d", *length);
 
     if(estUnMonomeValide(extrait))
     {
