@@ -476,14 +476,36 @@ void entrezPolynome(void)
 
     concatenerPolynome(buffer, saisie);
 
-    printf("\nSaisie: %s\n",saisie);
+    //pour debug
+    //printf("\nSaisie: %s\n",saisie);
 
-    taille++;
+    /*taille++;
     polynome = (monome*) realloc(polynome, taille*sizeof(monome));
     polynome[taille-1] = premierMonome(saisie, &tailleMonome);
-    saisie += tailleMonome;
+    saisie += tailleMonome;*/
 
-    printf("\nPolynome :\n");
+    while(strlen(saisie) != 0)
+    {
+        taille++;
+        polynome = (monome*) realloc(polynome, taille*sizeof(monome));
+
+        if(taille == 1)
+            polynome[taille-1] = premierMonome(saisie, &tailleMonome);
+        else
+            polynome[taille-1] = extraitMonome(saisie, &tailleMonome);
+
+        saisie += tailleMonome;
+    }
+
+    printf("\nPolynome non trie, non reduit:");
+    displayPolynome(polynome, taille);
+
+    suppressionDoublons(polynome, &taille);
+    printf("\nPolynome non trie, reduit:");
+    displayPolynome(polynome, taille);
+
+    triPolynome(polynome, 0, taille);
+    printf("\nPolynome trie, reduit:");
     displayPolynome(polynome, taille);
 
     free(saisie);
@@ -520,21 +542,6 @@ void concatenerPolynome(char chaine[TAILLE_POLYNOME], char* sortie)
 {nombre entier ou décimal}
 {nombre entier ou décimal} {*X^} {nombre entier}
 */
-/*
-int main ()
-{
-  char str[] ="- This, a sample string.";
-  char * pch;
-  printf ("Splitting string \"%s\" into tokens:\n",str);
-  pch = strtok (str," ,.-");
-  while (pch != NULL)
-  {
-    printf ("%s\n",pch);
-    pch = strtok (NULL, " ,.-");
-  }
-  return 0;
-}*/
-
 monome premierMonome(char* chaine, int* length)
 {
     char* extrait;
@@ -557,8 +564,8 @@ monome premierMonome(char* chaine, int* length)
         extrait = strtok(buffer, separateurs);
         *length = strlen(extrait);
     }
-    //pour debug
-    //printf("\ntaille = %d", *length);
+
+    printf("\ntaille = %d", *length);
 
     if(estUnMonomeValide(extrait))
     {
@@ -591,9 +598,67 @@ monome premierMonome(char* chaine, int* length)
     return out;
 }
 
-monome extraitMonome(char* chaine)
+/*
+Pour toutes les autres positions :
+{signe + ou -} {nombre entier ou décimal}
+{signe + ou -} {nombre entier ou décimal} {*X^} {nombre entier}
+{signe + ou -} {X^} {nombre entier}
+{signe + ou -} {X}
+*/
+monome extraitMonome(char* chaine, int* length)
 {
+    char* extrait;
+    char* buffer = (char*) malloc(strlen(chaine) * sizeof(char));
+    strcpy(buffer, chaine);
 
+    monome out;
+
+    char separateurs[] = {'+','-','\0'};
+
+    out.coeff = 1;
+    if (*buffer == '-')
+    {
+        out.coeff = -1;
+        extrait = strtok(buffer + 1, separateurs);
+        *length = strlen(extrait) + 1;
+    }
+    else
+    {
+        extrait = strtok(buffer+1, separateurs);
+        *length = strlen(extrait) + 1;
+    }
+
+    printf("\ntaille = %d", *length);
+
+    if(estUnMonomeValide(extrait))
+    {
+        if(*extrait == 'X')
+            out.coeff *= 1;
+        else
+            out.coeff *= atof(extrait);
+
+        if(nbrOccChar(extrait, 'X'))
+        {
+            if(nbrOccChar(extrait, '^'))
+            {
+
+                out.exposant = atoi(strchr(extrait, '^') + 1);
+            }
+            else
+            {
+                out.exposant = 1;
+            }
+        }
+        else out.exposant  = 0;
+    }
+    else
+    {
+        out.coeff = 0;
+        out.exposant = 0;
+    }
+
+    free(buffer);
+    return out;
 }
 
 int estUnMonomeValide(char* chaine)
@@ -637,53 +702,3 @@ int nbrOccChar(char* chaine, char c)
 
     return out;
 }
-
-
-/*void estUnExposant(char* string, int* degres)
-{
-    int i = 0, cptPuissance = 1, buffer;
-    //char* deg = malloc(0*sizeof(char));
-    *degres = -1;
-
-    i = strlen(string);
-
-    if (i)
-        *degres = 0;
-
-    while(i)
-    {
-        buffer = estUnNombre(string[i-1]);
-        if(buffer != -1)
-        {
-            *degres += (buffer * cptPuissance);
-            printf("\ndeg=%d", *degres);
-            cptPuissance *= 10;
-            i--;
-        }
-        else
-        {
-            printf("Erreur, pas un nombre entier");
-            menu();
-        }
-    }
-}
-
-int estUnNombre(char c)
-{
-    if((c >= '0') && (c <= '9'))
-        return (c-'0');
-    return (-1);
-}
-
-int estUnSep(char c)
-{
-    return(((c == '+') || (c == '-')) || (c == '\0'));
-}*/
-
-/*
-Pour toutes les autres positions :
-{signe + ou -} {nombre entier ou décimal}
-{signe + ou -} {nombre entier ou décimal} {*X^} {nombre entier}
-{signe + ou -} {X^} {nombre entier}
-{signe + ou -} {X}
-*/
