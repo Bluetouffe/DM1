@@ -492,22 +492,21 @@ void entrezPolynome(void)
 
 void concatenerPolynome(char chaine[TAILLE_POLYNOME], char* sortie)
 {
-    int i=0, j=0;
-    char* sortieBuffer = malloc(0*sizeof(char));
-    //sortieBuffer = (char* ) realloc(sortieBuffer, 0*sizeof(char));
+    int i=0, j=0, tailleChaine = 0;
+
+    tailleChaine = strlen(chaine)-nbrOccChar(chaine, ' ');
+    char* sortieBuffer = calloc(tailleChaine+1, sizeof(char));
 
     do
     {
         if(chaine[i] != ' ')
         {
+            sortieBuffer[j] = chaine[i];
             j++;
-            sortieBuffer = (char *) realloc(sortieBuffer, j*sizeof(char));
-            sortieBuffer[j-1] = chaine[i];
         }
         i++;
     }
     while (chaine[i-1] != '\0');
-    sortie = (char *) realloc(sortie, (j+1)*sizeof(char));
     sortie[j] = '\0';
     strcpy(sortie, sortieBuffer);
 
