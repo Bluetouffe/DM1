@@ -668,13 +668,13 @@ int estUnMonomeValide(char* chaine)
     if (chaine == NULL)
         return 0;
 
-    char signeApparaissantUneFois[] = "+-X*^.";
+    char signeUneFois[] = "+-X*^.";
 
-    while(signeApparaissantUneFois[i-1] != '.')
+    do
     {
-        out &= (nbrOccChar(chaine, signeApparaissantUneFois[i]) <= 1);
+        out &= (nbrOccChar(chaine, signeUneFois[i]) <= 1);
         i++;
-    }
+    }while(signeUneFois[i-1] != '.');
 
     //Combinaisons incompatible:
     out &= !(!(nbrOccChar(chaine, 'X')) && nbrOccChar(chaine, '*'));
