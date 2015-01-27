@@ -557,8 +557,8 @@ monome premierMonome(char* chaine, int* length)
         extrait = strtok(buffer, separateurs);
         *length = strlen(extrait);
     }
-
-    printf("\ntaille = %d", *length);
+    //pour debug
+    //printf("\ntaille = %d", *length);
 
     if(estUnMonomeValide(extrait))
     {
