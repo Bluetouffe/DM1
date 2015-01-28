@@ -484,7 +484,8 @@ void entrezPolynome(void)
     taillePolynome = nbrOccChar(saisie, '-') + nbrOccChar(saisie, '+') + 1;
     printf("\ntaille polynome: %d", taillePolynome);
 
-    monome* polynome = calloc(taillePolynome,sizeof(monome));
+    monome* polynome = NULL;
+    polynome = (monome*) realloc(polynome, taillePolynome*sizeof(monome));
 
     while(strlen(saisie) != 0)
     {
@@ -516,23 +517,30 @@ void entrezPolynome(void)
 
 void concatenerPolynome(char chaine[TAILLE_POLYNOME], char* sortie)
 {
-    int i=0, j=0, tailleChaine = 0;
-
+    int i, j, tailleChaine;
+    i = j = 0;
     tailleChaine = strlen(chaine)-nbrOccChar(chaine, ' ');
-    char* sortieBuffer = calloc(tailleChaine+1, sizeof(char));
+    char* sortieBuffer = NULL;
+    sortieBuffer = (char*) calloc(tailleChaine+1, sizeof(char));
 
     do
     {
-        if(chaine[i] != ' ')
+        if(chaine[i] != 32)
         {
             sortieBuffer[j] = chaine[i];
             j++;
         }
         i++;
     }
-    while (chaine[i] != '\0');
-    sortie[j] = '\0';
-    strcpy(sortie, sortieBuffer);
+    while(j<tailleChaine && i<strlen(chaine));
+
+    sortieBuffer[j] = '\0';
+
+    sortie = (char*) realloc(sortie, (j+1) * sizeof(char));
+    for (i=0; i<=j; i++)
+    {
+        sortie[i] = sortieBuffer[i];
+    }
 
     free(sortieBuffer);
 }
