@@ -156,7 +156,7 @@ void question5(void)
 {
     monome * p5 = malloc(0*sizeof(monome));
     int taille = 0;
-    double x;
+    double x = 0;
     saisie(p5, &taille);
 
     suppressionDoublons(p5, &taille);
@@ -296,13 +296,13 @@ void displayMonome(monome m)
         else
         {
             if(m.coeff == 1)
-                printf(" + X^%d ",m.exposant);
+                printf(" + X^%d ", m.exposant);
             else
             {
                 if(m.coeff == -1)
-                    printf(" - X^%d ",m.exposant);
+                    printf(" - X^%d ", m.exposant);
                 else
-                    printf("%+.2f * X^%d ", m.coeff,m.exposant);
+                    printf("%+.2f * X^%d ", m.coeff, m.exposant);
             }
         }
     }
@@ -464,25 +464,27 @@ void entrezPolynome(void)
     //monome* polynome = NULL;
     //polynome = malloc(0*sizeof(monome));
 
-    int taille = 0, tailleMonome = 0, taillePolynome;
-    char buffer[TAILLE_POLYNOME]= {0};
+    int taille = 0, tailleMonome = 0, taillePolynome = 0;
+    char buffer[TAILLE_POLYNOME]= {'\0'};
 
     printf("\nEntrez un polynome :\n");
     fflush(stdin);
     gets(buffer);
     fflush(stdin);
 
-    char* saisie = malloc(0*sizeof(char));
+    //pour debug
+    printf("\nSaisie: %s\n",buffer);
 
+    char* saisie = malloc(0*sizeof(char));
     concatenerPolynome(buffer, saisie);
+
+    //pour debug
+    printf("\nSaisie: %s\n",saisie);
 
     taillePolynome = nbrOccChar(saisie, '-') + nbrOccChar(saisie, '+') + 1;
     printf("\ntaille polynome: %d", taillePolynome);
-    //monome* polynome = NULL;
-    monome* polynome = calloc(taillePolynome,sizeof(monome));
 
-    //pour debug
-    //printf("\nSaisie: %s\n",saisie);
+    monome* polynome = calloc(taillePolynome,sizeof(monome));
 
     while(strlen(saisie) != 0)
     {
@@ -528,7 +530,7 @@ void concatenerPolynome(char chaine[TAILLE_POLYNOME], char* sortie)
         }
         i++;
     }
-    while (chaine[i-1] != '\0');
+    while (chaine[i] != '\0');
     sortie[j] = '\0';
     strcpy(sortie, sortieBuffer);
 
@@ -674,7 +676,8 @@ int estUnMonomeValide(char* chaine)
     {
         out &= (nbrOccChar(chaine, signeUneFois[i]) <= 1);
         i++;
-    }while(signeUneFois[i-1] != '.');
+    }
+    while(signeUneFois[i-1] != '.');
 
     //Combinaisons incompatible:
     out &= !(!(nbrOccChar(chaine, 'X')) && nbrOccChar(chaine, '*'));
