@@ -461,11 +461,9 @@ double eval(monome* Polynome, double x)
 //monome * entrezPolynome()
 void entrezPolynome(void)
 {
-    //monome* polynome = NULL;
-    //polynome = malloc(0*sizeof(monome));
+    int taille = 0, tailleMonome = 0, taillePolynome = 0, start = 0;
 
-    int taille = 0, tailleMonome = 0, taillePolynome = 0;
-    char buffer[TAILLE_POLYNOME]= {'\0'};
+    char buffer[TAILLE_POLYNOME]= {0};
 
     printf("\nEntrez un polynome :\n");
     fflush(stdin);
@@ -473,31 +471,31 @@ void entrezPolynome(void)
     fflush(stdin);
 
     //pour debug
-    printf("\nSaisie: %s\n",buffer);
+    printf("\nSaisie buffer: %s\n",buffer);
 
-    char* saisie = malloc(0*sizeof(char));
+    char* saisie = calloc(strlen(buffer) - nbrOccChar(buffer, ' ') + 1,sizeof(char));
     concatenerPolynome(buffer, saisie);
 
     //pour debug
     printf("\nSaisie: %s\n",saisie);
 
     taillePolynome = nbrOccChar(saisie, '-') + nbrOccChar(saisie, '+') + 1;
+
+    //pour debug
     printf("\ntaille polynome: %d", taillePolynome);
 
-    monome* polynome = NULL;
-    polynome = (monome*) realloc(polynome, taillePolynome*sizeof(monome));
+    monome* polynome = (monome*) calloc(taillePolynome, sizeof(monome));
 
-    while(strlen(saisie) != 0)
+    while(strlen(saisie) - start != 0)
     {
         taille++;
-        //polynome = (monome*) realloc(polynome, taille*sizeof(monome));
 
         if(taille == 1)
             polynome[taille-1] = premierMonome(saisie, &tailleMonome);
         else
-            polynome[taille-1] = extraitMonome(saisie, &tailleMonome);
+            polynome[taille-1] = extraitMonome(saisie, &tailleMonome, start);
 
-        saisie += tailleMonome;
+        start += tailleMonome;
     }
 
     printf("\nPolynome non trie, non reduit:");
@@ -537,7 +535,7 @@ void concatenerPolynome(char chaine[TAILLE_POLYNOME], char* sortie)
     sortieBuffer[j] = '\0';
 
     sortie = (char*) realloc(sortie, (j+1) * sizeof(char));
-    for (i=0; i<=j; i++)
+    for (i = 0; i <= j; i++)
     {
         sortie[i] = sortieBuffer[i];
     }
@@ -615,12 +613,16 @@ Pour toutes les autres positions :
 {signe + ou -} {X^} {nombre entier}
 {signe + ou -} {X}
 */
-monome extraitMonome(char* chaine, int* length)
+monome extraitMonome(char* chaine, int* length, int start)
 {
     char* extrait;
-    char* buffer = (char*) calloc(strlen(chaine)+1, sizeof(char));
-    strcpy(buffer, chaine);
-
+    char* buffer = (char*) calloc(strlen(chaine) + 1 - start, sizeof(char));
+    strcpy(buffer, &chaine[start]);
+    /*for (i=0; i <= (strlen(chaine) - start); i++)
+    {
+        buffer[i] = chaine[i+start-1];
+    }*/
+    printf("\nBuffer= %s", buffer);
     monome out;
 
     char separateurs[] = {'+','-','\0'};
