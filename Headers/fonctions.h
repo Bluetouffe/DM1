@@ -3,7 +3,6 @@
 
 #define DECALAGE 5
 #define TAILLE_POLYNOME 1024
-#define DEBUG
 
 typedef struct monome{
     float coeff;
@@ -45,7 +44,7 @@ monome premierMonome(char* chaine, int* length);
 void entrezPolynome(void);
 int estUnMonomeValide(char* chaine);
 int nbrOccChar(char* chaine, char c);
-monome extraitMonome(char* chaine);
+monome extraitMonome(char* chaine, int* length);
 /*void estUnExposant(char* string, int* degres);
 int estUnNombre(char c);
 int estUnSep(char c);*/
